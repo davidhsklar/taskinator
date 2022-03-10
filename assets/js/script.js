@@ -1,5 +1,8 @@
 //Setting up some variables to use
 
+var taskIdCounter = 0;
+
+
 var formEl = document.querySelector("#task-form");
 
 var taskToDoEl = document.querySelector("#task-to-do");
@@ -8,6 +11,8 @@ var taskToDoEl = document.querySelector("#task-to-do");
 //creating list element
 
 var taskItemEl = document.createElement("li");
+
+
 
 //applying task item to task table
 
@@ -47,17 +52,71 @@ formEl.reset();
     var listItemEl = document.createElement("li");
     listItemEl.className = "task-item";
     
+    // add task id as a custom attribute
+  listItemEl.setAttribute("data-task-id", taskIdCounter);
+    
     // create div to hold task info and add to list item
     var taskInfoEl = document.createElement("div");
     taskInfoEl.className = "task-info";
     taskInfoEl.innerHTML = "<h3 class='task-name'>" + taskDataObj.name + "</h3><span class='task-type'>" + taskDataObj.type + "</span>";
     
     listItemEl.appendChild(taskInfoEl);
+
+    var taskActionsEl = createTaskActions(taskIdCounter);
+    var taskActionsEl = createTaskActions(taskIdCounter);
+    listItemEl.appendChild(taskActionsEl);
     
     // add entire list item to list
     taskToDoEl.appendChild(listItemEl);
 
-}
+    // increase task counter for next unique id
+  taskIdCounter++;
+};
+
+var createTaskActions = function(taskId) {
+    var actionContainerEl = document.createElement("div");
+    actionContainerEl.className = "task-actions";
+
+    // create edit button
+
+var editButtonEl = document.createElement("button");
+editButtonEl.textContent = "Edit";
+editButtonEl.className = "btn edit-btn";
+editButtonEl.setAttribute("data-task-id", taskId);
+
+actionContainerEl.appendChild(editButtonEl);
+
+// create delete button
+
+var deleteButtonEl = document.createElement("button");
+deleteButtonEl.textContent = "Delete";
+deleteButtonEl.className = "btn delete-btn";
+deleteButtonEl.setAttribute("data-task-id", taskId);
+
+actionContainerEl.appendChild(deleteButtonEl);
+
+var statusSelectEl = document.createElement("select");
+statusSelectEl.className = "select-status";
+statusSelectEl.setAttribute("name", "status-change");
+statusSelectEl.setAttribute("data-task-id", taskId);
+
+actionContainerEl.appendChild(statusSelectEl);
+
+var statusChoices = ["To Do", "In Progress", "Completed"];
+
+for (var i = 0; i < statusChoices.length; i++) {
+    // create option element
+    var statusOptionEl = document.createElement("option");
+    statusOptionEl.textContent = statusChoices[i];
+    statusOptionEl.setAttribute("value", statusChoices[i]);
+  
+    // append to select
+    statusSelectEl.appendChild(statusOptionEl);
+  }
+
+return actionContainerEl;
+
+};
   //add task on form.  Because we're targeting the entire form instead of only the button, 
   //we can't use the click event listener anymore. If we kept a click event listener, t
   //then every time we clicked on the form it would run the taskFormHandler () function, 
